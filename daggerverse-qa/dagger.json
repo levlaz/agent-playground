@@ -1,4 +1,13 @@
 {
-  "name": "qa",
-  "engineVersion": "v0.17.0-llm.11"
+  "name": "daggerverse-qa",
+  "engineVersion": "v0.17.0-llm.11",
+  "sdk": {
+    "source": "go"
+  },
+  "dependencies": [
+    {
+      "name": "workspace",
+      "source": "workspace"
+    }
+  ]
 }

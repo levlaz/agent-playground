@@ -11,12 +11,6 @@ import (
 
 type DaggerverseQa struct{}
 
-// Return workspace that the agent uses to perform QA
-func (m *DaggerverseQa) Workspace(ctx context.Context) *dagger.Container {
-	return dag.Container().
-		From("alpine:latest")
-}
-
 // Return list of dagger modules and their latest versions
 func (m *DaggerverseQa) Modules(ctx context.Context) *dagger.File {
 	return dag.Container().
