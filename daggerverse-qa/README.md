@@ -29,6 +29,13 @@ To contribute to this module:
 3. Test locally using `dagger call test`
 4. Submit a pull request
 
+## TODO 
+
+- Consinstently do more than one thing at a time 
+- Do matrix builds with multiple versions of Dagger Engine
+- Set up some cron jobs to run this all the time 
+- Get notifications going
+
 ## License
 
 MIT License

@@ -36,15 +36,20 @@ func (w *Workspace) Write(path, content string) *Workspace {
 }
 
 // Install a module
-func (m *Workspace) Install(ctx context.Context, module string) *Workspace {
+func (m *Workspace) Install(ctx context.Context, module string, version string) *Workspace {
 	m.Container = m.Container.
 		WithExec([]string{"dagger", "install", module}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true})
 	return m
 }
 
 // Build a module
-func (m *Workspace) Build(ctx context.Context, module string) *Workspace {
+func (m *Workspace) Build(ctx context.Context, module string, version string) *Workspace {
 	m.Container = m.Container.
 		WithExec([]string{"dagger", "-m", module, "functions"}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true})
 	return m
+}
+
+// Get Dagger Version
+func (m *Workspace) Version(ctx context.Context) (string, error) {
+	return m.Container.WithExec([]string{"dagger", "version"}).Stdout(ctx)
 }

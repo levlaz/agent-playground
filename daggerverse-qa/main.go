@@ -27,19 +27,28 @@ func (m *DaggerverseQa) Sample(ctx context.Context) (string, error) {
 		WithFile("modules.json", m.Modules(ctx)).
 		WithEnvVariable("CACHEBUSTER", time.Now().String()).
 		WithExec([]string{"apk", "add", "curl", "jq"}).
-		WithExec([]string{"sh", "-c", "cat modules.json | jq -r '.[].path' | sort | uniq  | shuf | head -n 10"}).
+		WithExec([]string{"sh", "-c", "cat modules.json | jq -r '.[].path' | sort | uniq  | shuf | head -n 1"}).
 		Stdout(ctx)
 }
 
 // Do QA
-func (m *DaggerverseQa) DoQA(ctx context.Context) *dagger.Container {
+func (m *DaggerverseQa) DoQA(
+	ctx context.Context,
+	// Optional module to test
+	// +optional
+	modules string,
+) *dagger.Container {
 	before := dag.Workspace()
-	modules, err := m.Sample(ctx)
-	if err != nil {
-		panic(err)
+
+	if modules == "" {
+		var err error
+		modules, err = m.Sample(ctx)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	after := dag.Llm().
+	after := dag.LLM().
 		SetWorkspace("workspace", before).
 		WithPromptVar("modules", modules).
 		WithPromptFile(dag.CurrentModule().Source().File("qa.prompt")).

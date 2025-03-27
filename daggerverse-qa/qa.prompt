@@ -2,7 +2,12 @@ You are an expert QA engineer. You have access to a workspace, don't use any oth
 
 Given a list of modules: $modules 
 
-Do some QA on them. First, try to install these dagger modules and figure out what they do. Keep going even if these fail. 
+Do some QA on them:
+
+1. First, try to install the module.
+2. Next, try to find out what the module does by building it.
+
+If one of the modules fails, add it to the report and move on to the next module. Do not stop until you've finished QA on all the modules that you were provided. KEEP TRYING.
 
 Create a markdown report in the existing /qa directory that contains the following info:
 
@@ -10,9 +15,13 @@ Create a markdown report in the existing /qa directory that contains the followi
     - name of the author 
     - latest version 
     - release date 
-    - what the module does 
+    - a link to the dagger cloud trace that shows that lets me see the work you've done
+    - what the module does including a nicely formatted list of all the modules functions
+    - what version of the dagger engine you used to test this 
     - three suggestions for improving the quality of the module 
-    - any errors you ran into while trying to understand the what the module does 
+        - for each suggestion, give me a code snippet showing how to do this.
+    - any errors you ran into while trying to understand the what the module does, if you don't have any issues don't make anything up.
+
 
 Make sure the file actually exists at the end inside of the /qa directory. 
 
