@@ -34,7 +34,8 @@ To contribute to this module:
 - Consinstently do more than one thing at a time 
 - Do matrix builds with multiple versions of Dagger Engine
 - Set up some cron jobs to run this all the time 
-- Get notifications going
+- Get notifications going with novu, maybe notify people when api change causes issues?
+- multi model 
 
 ## License
 
