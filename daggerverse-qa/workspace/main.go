@@ -35,18 +35,16 @@ func (w *Workspace) Write(path, content string) *Workspace {
 	return w
 }
 
-// Install a module
-func (m *Workspace) Install(ctx context.Context, module string, version string) *Workspace {
-	m.Container = m.Container.
-		WithExec([]string{"dagger", "install", module}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true})
-	return m
+// Attempt to install a module and get the result
+func (m *Workspace) Install(ctx context.Context, module string, version string) (string, error) {
+	return m.Container.
+		WithExec([]string{"dagger", "install", module}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true}).Stdout(ctx)
 }
 
-// Build a module
-func (m *Workspace) Build(ctx context.Context, module string, version string) *Workspace {
-	m.Container = m.Container.
-		WithExec([]string{"dagger", "-m", module, "functions"}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true})
-	return m
+// Build a module and list its functions
+func (m *Workspace) Build(ctx context.Context, module string, version string) (string, error) {
+	return m.Container.
+		WithExec([]string{"dagger", "-m", module, "functions"}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true}).Stdout(ctx)
 }
 
 // Get Dagger Version

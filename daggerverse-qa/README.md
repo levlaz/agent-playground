@@ -36,6 +36,7 @@ To contribute to this module:
 - Set up some cron jobs to run this all the time 
 - Get notifications going with novu, maybe notify people when api change causes issues?
 - multi model 
+- experiment with dagger install github.com/kpenfound/dag/firecrawl@v1.0.2
 
 ## License
 

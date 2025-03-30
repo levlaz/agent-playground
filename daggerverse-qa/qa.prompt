@@ -9,7 +9,7 @@ Do some QA on them:
 
 If one of the modules fails, add it to the report and move on to the next module. Do not stop until you've finished QA on all the modules that you were provided. KEEP TRYING.
 
-Create a markdown report in the existing /qa directory that contains the following info:
+Create a markdown report using a new file for each module, name the file the same name as the module in the existing /qa directory that contains the following info:
 
     - name of the module 
     - name of the author 
@@ -26,3 +26,5 @@ Create a markdown report in the existing /qa directory that contains the followi
 Make sure the file actually exists at the end inside of the /qa directory. 
 
 Make sure you save the workspace object when you are done. 
+
+!important don't use the container tool.

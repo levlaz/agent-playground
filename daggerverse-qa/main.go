@@ -6,6 +6,8 @@ package main
 import (
 	"context"
 	"dagger/daggerverse-qa/internal/dagger"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -25,34 +27,51 @@ func (m *DaggerverseQa) Sample(ctx context.Context) (string, error) {
 	return dag.Container().
 		From("alpine:latest").
 		WithFile("modules.json", m.Modules(ctx)).
-		WithEnvVariable("CACHEBUSTER", time.Now().String()).
 		WithExec([]string{"apk", "add", "curl", "jq"}).
-		WithExec([]string{"sh", "-c", "cat modules.json | jq -r '.[].path' | sort | uniq  | shuf | head -n 1"}).
+		WithEnvVariable("CACHEBUSTER", time.Now().String()).
+		WithExec([]string{"sh", "-c", "cat modules.json | jq -r '.[].path' | sort | uniq  | shuf | head -n 3"}).
 		Stdout(ctx)
 }
 
-// Do QA
+// Iterate over modules and perform QA on each one
 func (m *DaggerverseQa) DoQA(
 	ctx context.Context,
 	// Optional module to test
 	// +optional
 	modules string,
-) *dagger.Container {
-	before := dag.Workspace()
+) (*dagger.Directory, error) {
 
 	if modules == "" {
 		var err error
 		modules, err = m.Sample(ctx)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 
+	output := dag.Directory()
+
+	for _, module := range strings.Split(modules, " ") {
+		report, err := m.Run(ctx, module)
+		if err != nil {
+			fmt.Errorf("failed to run QA for module %s: %v", module, err)
+		}
+
+		output = output.WithDirectory(".", report)
+	}
+
+	return output, nil
+}
+
+// Perform Single QA Run
+func (m *DaggerverseQa) Run(ctx context.Context, module string) (*dagger.Directory, error) {
+	before := dag.Workspace()
+
 	after := dag.LLM().
 		WithWorkspace(before).
-		WithPromptVar("modules", modules).
+		WithPromptVar("modules", module).
 		WithPromptFile(dag.CurrentModule().Source().File("qa.prompt")).
 		Workspace()
 
-	return after.Container()
+	return after.Container().Directory("/qa"), nil
 }
