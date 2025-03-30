@@ -49,10 +49,10 @@ func (m *DaggerverseQa) DoQA(
 	}
 
 	after := dag.LLM().
-		SetWorkspace("workspace", before).
+		WithWorkspace(before).
 		WithPromptVar("modules", modules).
 		WithPromptFile(dag.CurrentModule().Source().File("qa.prompt")).
-		GetWorkspace("workspace")
+		Workspace()
 
 	return after.Container()
 }

@@ -17,7 +17,7 @@ A Dagger module for automated Quality Assurance testing of Daggerverse modules.
 Run the QA agent using the Dagger CLI:
 
 ```shell
-dagger call -m github.com/levlaz/daggerverse-qa test --module=path/to/your/module
+dagger call -m github.com/levlaz/agent-playground/daggerverse-qa do-qa --module=path/to/your/module
 ```
 
 ## Development
