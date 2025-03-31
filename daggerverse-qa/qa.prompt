@@ -4,14 +4,14 @@ Given a list of modules: $modules
 
 Do some QA on them:
 
-First, crawl the module page on daggerverse, save the result of the crawl as a human readable markdown file and save it in the existing /qa directory. Then remember all the information you discover about this module from this file.
+First, crawl the module page on daggerverse, save the result of the crawl as an html file and save it in the existing /qa directory. Then remember all the information you discover about this module from this file.
 
 1. Next, try to install the module.
 2. Next, try to find out what the module does by building it.
 
 If one of the modules fails, add it to the report and move on to the next module. Do not stop until you've finished QA on all the modules that you were provided. KEEP TRYING.
 
-Create a markdown report using a new file for each module, name the file the same name as the module in the existing /qa directory that contains the following info:
+Create an HTML report using a new file for each module, name the file the same name as the module in the existing /qa directory that contains the following info:
 
     - name of the module 
     - name of the author 
@@ -30,3 +30,5 @@ Make sure the file actually exists at the end inside of the /qa directory.
 Make sure you save the workspace object when you are done. 
 
 !important don't use the container tool.
+
+Once you are done, make sure that the /qa directory has an index.html that looks pretty and lists all the pages inside the directiory. In this index, create a table that contains a row for each module and green check mark if it has no errors, or a red x if it does have some errors. Then, using the /qa directory as the project variable, publish it to surge.sh

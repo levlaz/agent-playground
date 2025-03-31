@@ -9,6 +9,11 @@
       "name": "firecrawl-dag",
       "source": "github.com/kpenfound/dag/firecrawl",
       "pin": "7cf4101972d47d1d8e83ce98d9a2f8a5f576dff0"
+    },
+    {
+      "name": "surge",
+      "source": "github.com/levlaz/daggerverse/surge",
+      "pin": "b9bdfbbf0216c57eeda07077767a7849abdf8230"
     }
   ]
 }

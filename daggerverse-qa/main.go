@@ -11,7 +11,30 @@ import (
 	"time"
 )
 
-type DaggerverseQa struct{}
+type DaggerverseQa struct {
+	// Firecrawl token
+	FirecrawlToken *dagger.Secret
+	// Surge Login
+	Login string
+	// Surge Token
+	SurgeToken *dagger.Secret
+	// Surge Domain
+	Domain string
+}
+
+func New(
+	firecrawlToken *dagger.Secret,
+	login string,
+	surgeToken *dagger.Secret,
+	domain string,
+) DaggerverseQa {
+	return DaggerverseQa{
+		FirecrawlToken: firecrawlToken,
+		Login:          login,
+		SurgeToken:     surgeToken,
+		Domain:         domain,
+	}
+}
 
 // Return list of dagger modules and their latest versions
 func (m *DaggerverseQa) Modules(ctx context.Context) *dagger.File {
@@ -39,8 +62,6 @@ func (m *DaggerverseQa) DoQA(
 	// Optional module to test
 	// +optional
 	modules string,
-	// Firecrawl API token
-	token *dagger.Secret,
 ) (*dagger.Directory, error) {
 
 	if modules == "" {
@@ -54,7 +75,7 @@ func (m *DaggerverseQa) DoQA(
 	output := dag.Directory()
 
 	for _, module := range strings.Split(modules, " ") {
-		report, err := m.Run(ctx, module, token)
+		report, err := m.Run(ctx, module)
 		if err != nil {
 			fmt.Errorf("failed to run QA for module %s: %v", module, err)
 		}
@@ -66,8 +87,8 @@ func (m *DaggerverseQa) DoQA(
 }
 
 // Perform Single QA Run
-func (m *DaggerverseQa) Run(ctx context.Context, module string, token *dagger.Secret) (*dagger.Directory, error) {
-	before := dag.Workspace(token)
+func (m *DaggerverseQa) Run(ctx context.Context, module string) (*dagger.Directory, error) {
+	before := dag.Workspace(m.FirecrawlToken, m.Login, m.SurgeToken, m.Domain)
 
 	after := dag.LLM().
 		WithWorkspace(before).
