@@ -1,6 +1,6 @@
-# Daggerverse QA Agent
+# Daggerverse QA
 
-A Dagger module for automated Quality Assurance testing of Daggerverse modules.
+An automated QA tool for Daggerverse modules.
 
 ## Features
 
@@ -8,17 +8,26 @@ A Dagger module for automated Quality Assurance testing of Daggerverse modules.
 - Validation of module interfaces and functionality
 - Test report generation
 
-## Requirements
+## Usage 
 
-- Dagger CLI (latest version)
+This tool automatically tests Daggerverse modules and generates HTML reports for each module in the `/qa` directory.
 
-## Usage
-
-Run the QA agent using the Dagger CLI:
+Run the QA agent using the Dagger shell:
 
 ```shell
-dagger call -m github.com/levlaz/agent-playground/daggerverse-qa do-qa --module=path/to/your/module
+. $FIRECRAWL_API_KEY lev@levlaz.org           
+                 $SURGE_TOKEN daggerverse-qa | do-qa | export  
+                 ./qa
 ```
+
+## Publishing Reports
+
+The generated reports are automatically published to surge.sh. The process:
+
+1. All module reports are stored in the `/qa` directory
+2. An `index.html` is automatically generated with a summary table of all tested modules
+3. The entire `/qa` directory is published to surge.sh using the Dagger pipeline
+
 
 ## Development
 
@@ -36,7 +45,6 @@ To contribute to this module:
 - Set up some cron jobs to run this all the time 
 - Get notifications going with novu, maybe notify people when api change causes issues?
 - multi model 
-- experiment with dagger install github.com/kpenfound/dag/firecrawl@v1.0.2
 
 ## License
 
