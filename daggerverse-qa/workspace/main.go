@@ -23,11 +23,12 @@ type Workspace struct {
 
 func New(token *dagger.Secret, login string, surgeToken *dagger.Secret, domain string) Workspace {
 	return Workspace{
+
 		Container: dag.Container().
 			From("alpine:latest").
-			WithDirectory("/qa", dag.Directory()).
+			WithExec([]string{"apk", "add", "curl", "docker", "git"}).
+			WithExec([]string{"git", "clone", "https://github.com/levlaz/daggerverse-qa-reports", "/qa"}).
 			WithWorkdir("/qa").
-			WithExec([]string{"apk", "add", "curl", "docker"}).
 			WithExec([]string{"sh", "-c", "curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh"}).
 			WithExec([]string{"dagger", "init"}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true}),
 		FirecrawlToken: token,

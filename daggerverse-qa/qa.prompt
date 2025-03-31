@@ -22,6 +22,7 @@ Create an HTML report using a new file for each module, name the file the same n
     - what version of the dagger engine you used to test this 
     - three suggestions for improving the quality of the module 
         - for each suggestion, give me a code snippet showing how to do this.
+        - use at least one meme inside of the feedback. Make sure the meme file actually exists and does not result in a 404.
     - any errors you ran into while trying to understand the what the module does, if you don't have any issues don't make anything up.
 
 
@@ -31,4 +32,4 @@ Make sure you save the workspace object when you are done.
 
 !important don't use the container tool.
 
-Once you are done, make sure that the /qa directory has an index.html that looks pretty and lists all the pages inside the directiory. In this index, create a table that contains a row for each module and green check mark if it has no errors, or a red x if it does have some errors. Make sure to include the link to the raw crawl results in the same row. Then, using the /qa directory as the project variable, publish it to surge.sh
+Once you are done, make sure that the /qa directory has an index.html that looks pretty and lists all the pages inside the directory. In this index, create a table that contains a row for each module and green check mark if it has no errors, or a red x if it does have some errors. Make sure to include the link to the raw crawl results in the same row. Then, using the /qa directory as the project variable, publish it to surge.sh

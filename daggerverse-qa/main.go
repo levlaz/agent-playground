@@ -12,27 +12,31 @@ import (
 )
 
 type DaggerverseQa struct {
-	// Firecrawl token
-	FirecrawlToken *dagger.Secret
 	// Surge Login
 	Login string
-	// Surge Token
-	SurgeToken *dagger.Secret
 	// Surge Domain
 	Domain string
+	// Firecrawl token
+	FirecrawlToken *dagger.Secret
+	// Surge Token
+	SurgeToken *dagger.Secret
+	// GitHub Token
+	GitHubToken *dagger.Secret
 }
 
 func New(
-	firecrawlToken *dagger.Secret,
 	login string,
-	surgeToken *dagger.Secret,
 	domain string,
+	firecrawlToken *dagger.Secret,
+	surgeToken *dagger.Secret,
+	githubToken *dagger.Secret,
 ) DaggerverseQa {
 	return DaggerverseQa{
-		FirecrawlToken: firecrawlToken,
 		Login:          login,
-		SurgeToken:     surgeToken,
 		Domain:         domain,
+		FirecrawlToken: firecrawlToken,
+		SurgeToken:     surgeToken,
+		GitHubToken:    githubToken,
 	}
 }
 
@@ -52,7 +56,7 @@ func (m *DaggerverseQa) Sample(ctx context.Context) (string, error) {
 		WithFile("modules.json", m.Modules(ctx)).
 		WithExec([]string{"apk", "add", "curl", "jq"}).
 		WithEnvVariable("CACHEBUSTER", time.Now().String()).
-		WithExec([]string{"sh", "-c", "cat modules.json | jq -r '.[].path' | sort | uniq  | shuf | head -n 3"}).
+		WithExec([]string{"sh", "-c", "cat modules.json | jq -r '.[].path' | sort | uniq  | shuf | head -n 1"}).
 		Stdout(ctx)
 }
 
@@ -82,6 +86,24 @@ func (m *DaggerverseQa) DoQA(
 
 		output = output.WithDirectory(".", report)
 	}
+
+	// Push changes back to GitHub
+	dag.Container().
+		From("alpine:latest").
+		WithExec([]string{"apk", "add", "git"}).
+		WithExec([]string{"git", "config", "--global", "user.name", "Dagger QA agent"}).
+		WithExec([]string{"git", "config", "--global", "user.email", "lev@dagger.io"}).
+		WithSecretVariable("GH_DQA", m.GitHubToken).
+		WithDirectory("/qa", output).
+		WithWorkdir("/qa").
+		WithExec([]string{"git", "add", "."}).
+		WithExec([]string{"git", "commit", "-m", "publish updated QA report"}).
+		WithExec([]string{
+			"git",
+			"push",
+			"https://levlaz:$GH_DQA@github.com/levlaz/daggerverse-qa-reports.git",
+			"main",
+		}).Sync(ctx)
 
 	return output, nil
 }
