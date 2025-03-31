@@ -1,7 +1,14 @@
 {
   "name": "workspace",
-  "engineVersion": "v0.17.0-llm.11",
+  "engineVersion": "v0.17.2",
   "sdk": {
     "source": "go"
-  }
+  },
+  "dependencies": [
+    {
+      "name": "firecrawl-dag",
+      "source": "github.com/kpenfound/dag/firecrawl",
+      "pin": "7cf4101972d47d1d8e83ce98d9a2f8a5f576dff0"
+    }
+  ]
 }

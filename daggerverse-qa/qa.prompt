@@ -4,7 +4,9 @@ Given a list of modules: $modules
 
 Do some QA on them:
 
-1. First, try to install the module.
+First, crawl the module page on daggerverse, save the result of the crawl as a human readable markdown file and save it in the existing /qa directory. Then remember all the information you discover about this module from this file.
+
+1. Next, try to install the module.
 2. Next, try to find out what the module does by building it.
 
 If one of the modules fails, add it to the report and move on to the next module. Do not stop until you've finished QA on all the modules that you were provided. KEEP TRYING.

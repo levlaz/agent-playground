@@ -39,6 +39,8 @@ func (m *DaggerverseQa) DoQA(
 	// Optional module to test
 	// +optional
 	modules string,
+	// Firecrawl API token
+	token *dagger.Secret,
 ) (*dagger.Directory, error) {
 
 	if modules == "" {
@@ -52,7 +54,7 @@ func (m *DaggerverseQa) DoQA(
 	output := dag.Directory()
 
 	for _, module := range strings.Split(modules, " ") {
-		report, err := m.Run(ctx, module)
+		report, err := m.Run(ctx, module, token)
 		if err != nil {
 			fmt.Errorf("failed to run QA for module %s: %v", module, err)
 		}
@@ -64,8 +66,8 @@ func (m *DaggerverseQa) DoQA(
 }
 
 // Perform Single QA Run
-func (m *DaggerverseQa) Run(ctx context.Context, module string) (*dagger.Directory, error) {
-	before := dag.Workspace()
+func (m *DaggerverseQa) Run(ctx context.Context, module string, token *dagger.Secret) (*dagger.Directory, error) {
+	before := dag.Workspace(token)
 
 	after := dag.LLM().
 		WithWorkspace(before).
