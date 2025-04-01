@@ -5,6 +5,7 @@ import (
 	"context"
 	"dagger/workspace/internal/dagger"
 	"fmt"
+	"time"
 )
 
 type Workspace struct {
@@ -23,14 +24,14 @@ type Workspace struct {
 
 func New(token *dagger.Secret, login string, surgeToken *dagger.Secret, domain string) Workspace {
 	return Workspace{
-
 		Container: dag.Container().
 			From("alpine:latest").
 			WithExec([]string{"apk", "add", "curl", "docker", "git"}).
+			WithEnvVariable("CACHEBUSTER", time.Now().String()).
 			WithExec([]string{"git", "clone", "https://github.com/levlaz/daggerverse-qa-reports", "/qa"}).
 			WithWorkdir("/qa").
-			WithExec([]string{"sh", "-c", "curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh"}).
-			WithExec([]string{"dagger", "init"}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true}),
+			WithExec([]string{"sh", "-c", "curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh"}),
+		// WithExec([]string{"dagger", "init"}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true}),
 		FirecrawlToken: token,
 		Login:          login,
 		SurgeToken:     surgeToken,

@@ -90,18 +90,19 @@ func (m *DaggerverseQa) DoQA(
 	// Push changes back to GitHub
 	dag.Container().
 		From("alpine:latest").
+		WithSecretVariable("GITHUB_TOKEN", m.GitHubToken).
 		WithExec([]string{"apk", "add", "git"}).
 		WithExec([]string{"git", "config", "--global", "user.name", "Dagger QA agent"}).
 		WithExec([]string{"git", "config", "--global", "user.email", "lev@dagger.io"}).
-		WithSecretVariable("GH_DQA", m.GitHubToken).
 		WithDirectory("/qa", output).
 		WithWorkdir("/qa").
+		WithExec([]string{"sh", "-c", `"git remote set-url origin https://$GITHUB_TOKEN@github.com/levlaz/daggerverse-qa-reports"`}).
 		WithExec([]string{"git", "add", "."}).
 		WithExec([]string{"git", "commit", "-m", "publish updated QA report"}).
 		WithExec([]string{
 			"git",
 			"push",
-			"https://levlaz:$GH_DQA@github.com/levlaz/daggerverse-qa-reports.git",
+			"origin",
 			"main",
 		}).Sync(ctx)
 
@@ -110,13 +111,18 @@ func (m *DaggerverseQa) DoQA(
 
 // Perform Single QA Run
 func (m *DaggerverseQa) Run(ctx context.Context, module string) (*dagger.Directory, error) {
-	before := dag.Workspace(m.FirecrawlToken, m.Login, m.SurgeToken, m.Domain)
+	workspace := dag.Workspace(m.FirecrawlToken, m.Login, m.SurgeToken, m.Domain)
+	environment := dag.Env().
+		WithWorkspaceInput("before", workspace, "tools to complete the assignment").
+		WithStringInput("module", module, "the module to perform qa on").
+		WithWorkspaceOutput("after", "the completed assignment")
 
-	after := dag.LLM().
-		WithWorkspace(before).
-		WithPromptVar("modules", module).
+	return dag.LLM().
+		WithEnv(environment).
 		WithPromptFile(dag.CurrentModule().Source().File("qa.prompt")).
-		Workspace()
-
-	return after.Container().Directory("/qa"), nil
+		Env().
+		Output("after").
+		AsWorkspace().
+		Container().
+		Directory("/qa"), nil
 }
