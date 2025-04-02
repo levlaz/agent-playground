@@ -76,7 +76,7 @@ func (m *DaggerverseQa) DoQA(
 	}
 
 	// Push changes back to GitHub
-	_, err := m.Push(ctx, output)
+	_, err := m.Push(ctx, output, modules)
 	if err != nil {
 		return nil, fmt.Errorf("failed to push changes to GitHub: %v", err)
 	}
@@ -85,7 +85,7 @@ func (m *DaggerverseQa) DoQA(
 }
 
 // Push changes back to GitHub
-func (m *DaggerverseQa) Push(ctx context.Context, directory *dagger.Directory) (*dagger.Container, error) {
+func (m *DaggerverseQa) Push(ctx context.Context, directory *dagger.Directory, modules string) (*dagger.Container, error) {
 	return dag.Container().
 		From("alpine:latest").
 		WithSecretVariable("GITHUB_TOKEN", m.GitHubToken).
@@ -96,7 +96,7 @@ func (m *DaggerverseQa) Push(ctx context.Context, directory *dagger.Directory) (
 		WithWorkdir("/qa").
 		WithExec([]string{"sh", "-c", "git remote set-url origin https://$GITHUB_TOKEN@github.com/levlaz/daggerverse-qa-reports"}).
 		WithExec([]string{"git", "add", "."}).
-		WithExec([]string{"git", "commit", "-m", "publish updated QA report"}).
+		WithExec([]string{"git", "commit", "-m", fmt.Sprintf("publish updated QA report for %s", modules)}).
 		WithExec([]string{
 			"git",
 			"push",
