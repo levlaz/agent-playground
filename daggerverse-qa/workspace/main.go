@@ -14,15 +14,9 @@ type Workspace struct {
 	Container *dagger.Container
 	// Firecrawl token
 	FirecrawlToken *dagger.Secret
-	// Surge Login
-	Login string
-	// Surge Token
-	SurgeToken *dagger.Secret
-	// Surge Domain
-	Domain string
 }
 
-func New(token *dagger.Secret, login string, surgeToken *dagger.Secret, domain string) Workspace {
+func New(token *dagger.Secret) Workspace {
 	return Workspace{
 		Container: dag.Container().
 			From("alpine:latest").
@@ -31,11 +25,7 @@ func New(token *dagger.Secret, login string, surgeToken *dagger.Secret, domain s
 			WithExec([]string{"git", "clone", "https://github.com/levlaz/daggerverse-qa-reports", "/qa"}).
 			WithWorkdir("/qa").
 			WithExec([]string{"sh", "-c", "curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh"}),
-		// WithExec([]string{"dagger", "init"}, dagger.ContainerWithExecOpts{ExperimentalPrivilegedNesting: true}),
 		FirecrawlToken: token,
-		Login:          login,
-		SurgeToken:     surgeToken,
-		Domain:         domain,
 	}
 }
 
@@ -70,16 +60,6 @@ func (m *Workspace) Crawl(ctx context.Context, module string) (string, error) {
 		return "", fmt.Errorf("failed to crawl %s: %v", module, err)
 	}
 	return resp, nil
-}
-
-// Publish a QA reports to surge.sh
-func (m *Workspace) Publish(ctx context.Context) (string, error) {
-	return dag.Surge(dagger.SurgeOpts{
-		Login:   m.Login,
-		Token:   m.SurgeToken,
-		Domain:  m.Domain,
-		Project: m.Container.Directory("/qa"),
-	}).Publish().Stdout(ctx)
 }
 
 // Get Dagger Version

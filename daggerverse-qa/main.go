@@ -12,30 +12,18 @@ import (
 )
 
 type DaggerverseQa struct {
-	// Surge Login
-	Login string
-	// Surge Domain
-	Domain string
 	// Firecrawl token
 	FirecrawlToken *dagger.Secret
-	// Surge Token
-	SurgeToken *dagger.Secret
 	// GitHub Token
 	GitHubToken *dagger.Secret
 }
 
 func New(
-	login string,
-	domain string,
 	firecrawlToken *dagger.Secret,
-	surgeToken *dagger.Secret,
 	githubToken *dagger.Secret,
 ) DaggerverseQa {
 	return DaggerverseQa{
-		Login:          login,
-		Domain:         domain,
 		FirecrawlToken: firecrawlToken,
-		SurgeToken:     surgeToken,
 		GitHubToken:    githubToken,
 	}
 }
@@ -88,15 +76,25 @@ func (m *DaggerverseQa) DoQA(
 	}
 
 	// Push changes back to GitHub
-	dag.Container().
+	_, err := m.Push(ctx, output)
+	if err != nil {
+		return nil, fmt.Errorf("failed to push changes to GitHub: %v", err)
+	}
+
+	return output, nil
+}
+
+// Push changes back to GitHub
+func (m *DaggerverseQa) Push(ctx context.Context, directory *dagger.Directory) (*dagger.Container, error) {
+	return dag.Container().
 		From("alpine:latest").
 		WithSecretVariable("GITHUB_TOKEN", m.GitHubToken).
 		WithExec([]string{"apk", "add", "git"}).
 		WithExec([]string{"git", "config", "--global", "user.name", "Dagger QA agent"}).
 		WithExec([]string{"git", "config", "--global", "user.email", "lev@dagger.io"}).
-		WithDirectory("/qa", output).
+		WithDirectory("/qa", directory).
 		WithWorkdir("/qa").
-		WithExec([]string{"sh", "-c", `"git remote set-url origin https://$GITHUB_TOKEN@github.com/levlaz/daggerverse-qa-reports"`}).
+		WithExec([]string{"sh", "-c", "git remote set-url origin https://$GITHUB_TOKEN@github.com/levlaz/daggerverse-qa-reports"}).
 		WithExec([]string{"git", "add", "."}).
 		WithExec([]string{"git", "commit", "-m", "publish updated QA report"}).
 		WithExec([]string{
@@ -105,13 +103,11 @@ func (m *DaggerverseQa) DoQA(
 			"origin",
 			"main",
 		}).Sync(ctx)
-
-	return output, nil
 }
 
 // Perform Single QA Run
 func (m *DaggerverseQa) Run(ctx context.Context, module string) (*dagger.Directory, error) {
-	workspace := dag.Workspace(m.FirecrawlToken, m.Login, m.SurgeToken, m.Domain)
+	workspace := dag.Workspace(m.FirecrawlToken)
 	environment := dag.Env().
 		WithWorkspaceInput("before", workspace, "tools to complete the assignment").
 		WithStringInput("module", module, "the module to perform qa on").
