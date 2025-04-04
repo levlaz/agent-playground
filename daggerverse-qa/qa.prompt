@@ -35,3 +35,5 @@ Make sure you save the workspace object when you are done.
 Once you are done, append a new row to the existing index.html file with a link to the module that you just did the QA for.
 
 In this index, make sure there is a table that contains a row for each module and green check mark if it has no errors, or a red x if it does have some errors. Make sure to include the link to the raw crawl results in the same row.
+
+!important make sure that every file in the "/qa" directory appears on in the index.html. If it doesn't, recreate the entire index.html file. Don't stop trying until every page in the directory is linked to from the index.html file.
