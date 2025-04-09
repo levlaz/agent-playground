@@ -12,14 +12,16 @@ import (
 )
 
 type DaggerverseQa struct {
-	// Firecrawl token
 	FirecrawlToken *dagger.Secret
-	// GitHub Token
-	GitHubToken *dagger.Secret
+	GitHubToken    *dagger.Secret
 }
 
 func New(
+	// Firecrawl token
+	// +optional
 	firecrawlToken *dagger.Secret,
+	// GitHub token
+	// +optional
 	githubToken *dagger.Secret,
 ) DaggerverseQa {
 	return DaggerverseQa{
@@ -75,6 +77,14 @@ func (m *DaggerverseQa) DoQA(
 		output = output.WithDirectory(".", report)
 	}
 
+	index, indexErr := m.BuildIndex(ctx, output)
+
+	if indexErr != nil {
+		return nil, fmt.Errorf("failed to build index: %v", indexErr)
+	}
+
+	output = output.WithFile("index.html", index)
+
 	// Push changes back to GitHub
 	_, err := m.Push(ctx, output, modules)
 	if err != nil {
@@ -121,4 +131,18 @@ func (m *DaggerverseQa) Run(ctx context.Context, module string) (*dagger.Directo
 		AsWorkspace().
 		Container().
 		Directory("/qa"), nil
+}
+
+// Build an Index Page given a directory full of HTML files
+func (m *DaggerverseQa) BuildIndex(ctx context.Context, directory *dagger.Directory) (*dagger.File, error) {
+	environment := dag.Env().
+		WithDirectoryInput("reports", directory, "the directory to build an index page for").
+		WithFileOutput("index", "the index for the directory")
+
+	return dag.LLM().
+		WithEnv(environment).
+		WithPromptFile(dag.CurrentModule().Source().File("index.prompt")).
+		Env().
+		Output("index").
+		AsFile(), nil
 }

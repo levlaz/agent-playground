@@ -1,0 +1,9 @@
+Given a directory full of html files: $reports 
+
+Each HTML file in this directory is a QA report for a dagger module. Read each file and create an $index file called index.html that includes a table that looks like this: 
+
+| Module Name | Brief Description | Red X if failing, Green Check if Passing | Link to the full report | 
+
+!imprtant make sure you actually read each file remember the information to add to the index. Also make sure there is one entry for each file that you read.
+
+Save and return the $index file once you are done.

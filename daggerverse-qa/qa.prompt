@@ -4,7 +4,7 @@ Given a list of modules: $modules
 
 Do some QA on them:
 
-First, crawl the module page on daggerverse, save the result of the crawl as an html file and save it in the existing /qa directory. Then remember all the information you discover about this module from this file.
+First, crawl the module page on daggerverse and remember all the information you discover about this module from this file.
 
 1. Next, try to install the module.
 2. Next, try to find out what the module does by building it.
@@ -31,11 +31,3 @@ Make sure the file actually exists at the end inside of the /qa directory.
 Make sure you save the workspace object when you are done. 
 
 !important don't use the container tool.
-
-Once you are done, append a new row to the existing index.html file with a link to the module that you just did the QA for.
-
-In this index, make sure there is a table that contains a row for each module and green check mark if it has no errors, or a red x if it does have some errors. Make sure to include the link to the raw crawl results in the same row.
-
-!important make sure that every file in the "/qa" directory appears on in the index.html. If it doesn't, recreate the entire index.html file. Don't stop trying until every page in the directory is linked to from the index.html file.
-
-I'll be very dissapointed in you if the index.html does not contain all of the files.
