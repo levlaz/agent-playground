@@ -12,4 +12,4 @@ jobs:
           command: cd /usr/local && { curl -L https://dl.dagger.io/dagger/install.sh | sudo -E sh; cd -; }
       - run:
           name: Run QA Pipeline
-          command: dagger -c './daggerverse-qa FIRECRAWL_API_KEY GITHUB_TOKEN | do-qa' --progress=plain
+          command: dagger -c './daggerverse-qa --firecrawl-token FIRECRAWL_API_KEY --github-token GITHUB_TOKEN | do-qa' --progress=plain
