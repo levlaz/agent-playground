@@ -1,6 +1,8 @@
 Given a directory full of html files: $reports 
 
-Create an $index file called index.html that includes a table that looks like this: 
+If you see an existing index.html file in this directory, delete it and start over.
+
+Create a new $index file called index.html that includes a table that looks like this: 
 
 | Module Name | Brief Description | Red X if failing, Green Check if Passing | Link to the full report | 
 
