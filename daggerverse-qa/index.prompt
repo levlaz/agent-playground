@@ -4,6 +4,6 @@ Each HTML file in this directory is a QA report for a dagger module. Read each f
 
 | Module Name | Brief Description | Red X if failing, Green Check if Passing | Link to the full report | 
 
-!imprtant this is a production implementation so make sure you actually read each file remember the information to add to the index. Also make sure there is one entry for each file that you read. Don't stop until this task is completed.
+!imprtant this is a production implementation so make sure you actually read each file remember the information to add to the index. You are operating in a non-interactive mode, so please don't ask for any additional confirmations. Make sure there is one entry for each file that you read. Don't stop until this task is completed. 
 
 Save and return the $index file once you are done.
