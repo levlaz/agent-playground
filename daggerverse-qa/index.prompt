@@ -8,6 +8,6 @@ Create a new $index file called index.html that includes a table that looks like
 
 Each HTML file in this directory is a QA report for a dagger module. Go step by step and read each file and then append an entry to the table that matches the module.
 
-!imprtant this is a production implementation so make sure you actually read each file remember the information to add to the index. You are operating in a non-interactive mode, so please don't ask for any additional confirmations. Make sure to process the actual data in each file and make sure there is one entry for each file that you read. Don't stop until this task is completed. 
+!imprtant this is a production implementation so make sure you actually read each file remember the information to add to the index. You are operating in a non-interactive mode, so please don't ask for any additional confirmations. Make sure to process the actual data in each file and make sure there is one entry for each file that you read. Don't stop until all files have been read and the index includes an entry for each file.
 
 Save and return the $index file once you are done.
